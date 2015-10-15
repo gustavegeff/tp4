@@ -1,0 +1,56 @@
+let rec length = function
+  |[] -> 0
+  |h::t -> 1 + (length t);;
+(*0.2*)
+let rec unicity l =
+  let rec aux n l =
+    match l with
+     |[] -> true 
+     |h::t when h <> n -> aux n t
+     |_-> false
+  in match l with
+     |[]-> true
+     |h::t -> aux h l && unicity t;;
+(*0.3*)
+ (*0.3.1*)  
+let print_cell = function
+    |[] -> print_char ' '
+    |[0] -> print_char '0'
+    |[1] -> print_char '1'
+    |_ -> invalid_arg "error";;
+ (*0.3.2*)
+let rec print_row = function
+  |[]-> print_newline ()
+  |h::t-> print_cell h; print_row t;;
+ (*0.3.3*)
+let rec print_grid = function
+  |[]-> print_newline ()
+  |h::t-> print_row h; print_print_grid;;
+(*0.4*)
+let rec binary l =
+  let rec pow x = function
+    |0-> 1
+    |n-> x*(pow x (n-1))	   
+  in match l with
+  |[]-> 0
+  |h::t-> pow h (length (t)) + binary t;;
+      
+let grid = [ [[1];[ ];[ ];[ ];[ ];[ ];[ ];[1]];
+	     [[ ];[ ];[1];[1];[ ];[ ];[ ];[ ]];
+	     [[1];[ ];[1];[ ];[1];[ ];[ ];[ ]];
+	     [[ ];[ ];[ ];[ ];[ ];[ ];[ ];[ ]];
+	     [[ ];[ ];[ ];[ ];[1];[ ];[ ];[1]];
+	     [[ ];[ ];[0];[ ];[ ];[ ];[ ];[1]];
+	     [[ ];[ ];[1];[ ];[ ];[ ];[ ];[ ]];
+	     [[ ];[ ];[ ];[0];[ ];[0];[ ];[ ]]
+	   ];;
+
+
+
+(*1.1*)
+let rec extract_row tab n =
+  match tab with
+  |[]-> []
+  |h::t when n>0 -> extract_row t (n-1)
+  |h::t when n>0 -> h
+  |_-> invalid_arg "error";;
