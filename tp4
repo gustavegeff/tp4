@@ -52,7 +52,7 @@ let rec extract_row tab n =
   match tab with
   |[]-> []
   |h::t when n>0 -> extract_row t (n-1)
-  |h::t when n>0 -> h
+  |h::t when n=0 -> h
   |_-> invalid_arg "error";;
 (*1.2*) 
 let rec extract_column tab n =
@@ -64,4 +64,86 @@ let rec extract_column tab n =
 let rec flatten = function
   |[]->[]
   |h::t-> (if h=[1] then 1 else 0):: flatten t;;
+  
+  (* let validate_count list =
+  let rec aux = function
+    | -1 -> true
+    | n ->
+      let cellCount l =
+        match (count l) with
+          | (0, z, o) -> z = o
+          | (x, z, o) -> let length = x + z + o in z <= (length / 2) && o <= (length / 2)
+      in (cellCount (extract_row list n)) && (cellCount (extract_column list n)) && aux (n - 1)
+  in aux ((length list) - 1);;
+ 
+validate_count grid;;
+ 
+ 
+(*
+2.3 Pairs only
+2.3.1 Check
+*)
+ 
+let rec twin = function
+  | e1::e2::e3::l when e1 = e2 ->
+    if e2 = e3 then false
+    else twin (e2::e3::l)
+  | e1::e2::e3::l when e1 <> e2 -> twin (e2::e3::l)
+  | _ -> true;;
+ 
+twin [0;0;0;1;1;0;1;1;0;1];;
+twin [1;0;0;1;1;0;1;1;0;1];;
+ 
+ 
+(* 2.3.2 Validation *)
+ 
+let validate_twin grid =
+  let rec aux = function
+    | (grid, 0) -> true
+    | (grid, n) -> twin (extract_row grid (n - 1)) && aux (grid, (n - 1))
+  in aux (grid, (length (extract_row grid 0)));;
+ 
+validate_twin solved;;
+ 
+ 
+(* 2.4 Unicity *)
+ 
+let validate_unicity grid =
+  let rec rows_bin = function
+    | -1 -> []
+    | n -> (binary (flatten (extract_row grid n)))::(rows_bin (n - 1)) in
+  let rec cols_bin = function
+    | -1 -> []
+    | n -> (binary (flatten (extract_column grid n)))::(cols_bin (n - 1)) in
+  unicity (rows_bin ((length grid) - 1)) && unicity (cols_bin ((length grid) - 1));;
+ 
+validate_unicity solved;;
+ 
+ 
+(*
+Level 3: manual solving
+3.1 Let's begin by the end
+*)
+ 
+let validate grid =
+ validate_count grid && validate_twin grid && validate_unicity grid;;
+ 
+ 
+(*
+3.2 Let's play
+3.2.1 Only one turn
+*)
+ 
+let rec play v (x, y) grid =
+  match (x, y, grid) with
+    | (x, y, r::g) when y = 0 ->
+      let rec colParse = function
+        | (i, e::r) when x = i -> [v] :: colParse (i - 1, r)
+        | (i, e::r) -> e :: colParse (i - 1, r)
+        | _ -> []
+      in colParse (length r, r) :: g
+    | (x, y, r::g) -> r :: play v (x, y - 1) g
+    | (x, y, _) -> [];;
+ 
+play 0 (1, 0) [[[];[]];[[];[]]];; *)
   
